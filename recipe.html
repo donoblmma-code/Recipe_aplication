@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View full cooking instructions, ingredients, measurements, and video tutorials on Cookly.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Recipe Details — Cookly</title>
+
+  <!-- Preconnect to API and Image CDN -->
+  <link rel="preconnect" href="https://www.themealdb.com">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/reset.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+
+      <!-- Logo -->
+      <a href="index.html" class="site-logo" aria-label="Cookly — Go to homepage">
+        <span class="site-logo-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+        </span>
+        <span class="site-logo-text">Cookly</span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="primary-nav" id="primaryNav" aria-label="Primary navigation">
+        <ul class="nav-list" role="list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="index.html#categories" class="nav-link">Explore</a>
+          </li>
+          <li class="nav-item">
+            <a href="favorites.html" class="nav-link">
+              Favorites
+              <span class="nav-badge" id="headerFavoritesCount" aria-label="favorites count" style="display: none;">0</span>
+            </a>
+          </li>
+        </ul>
+
+        <button
+          type="button"
+          class="btn btn-primary btn-surprise"
+          id="randomRecipeButton"
+          aria-label="Get a random recipe suggestion"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          <span>Surprise Me</span>
+        </button>
+      </nav>
+
+      <!-- Mobile Hamburger Button -->
+      <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileNavigation"
+      >
+        <span class="hamburger-bar" aria-hidden="true"></span>
+        <span class="hamburger-bar" aria-hidden="true"></span>
+        <span class="hamburger-bar" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav
+      class="mobile-nav"
+      id="mobileNavigation"
+      aria-label="Mobile navigation"
+      hidden
+    >
+      <ul class="mobile-nav-list" role="list">
+        <li><a href="index.html" class="mobile-nav-link">Home</a></li>
+        <li><a href="index.html#categories" class="mobile-nav-link">Explore</a></li>
+        <li><a href="favorites.html" class="mobile-nav-link">Favorites</a></li>
+      </ul>
+      <button
+        type="button"
+        class="btn btn-primary btn-surprise btn-full"
+        id="randomRecipeButtonMobile"
+        aria-label="Get a random recipe suggestion"
+      >
+        Surprise Me
+      </button>
+    </nav>
+  </header>
+
+
+  <!-- ============================================================
+       MAIN CONTENT: RECIPE DETAILS
+       ============================================================ -->
+  <main class="site-main" id="mainContent">
+    <div class="container recipe-detail-container">
+
+      <!-- Breadcrumbs & Navigation -->
+      <nav class="recipe-breadcrumbs" aria-label="Breadcrumb">
+        <a href="index.html" class="btn btn-secondary back-button" id="backToHomeBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back to recipes</span>
+        </a>
+      </nav>
+
+      <!-- Loading State Skeleton -->
+      <div class="recipe-skeleton" id="recipeSkeleton">
+        <div class="skeleton skeleton-hero-img"></div>
+        <div class="skeleton-content-box">
+          <div class="skeleton skeleton-pill"></div>
+          <div class="skeleton skeleton-heading"></div>
+          <div class="skeleton skeleton-text"></div>
+          <div class="skeleton skeleton-text" style="width: 70%;"></div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-state" id="recipeErrorState" hidden aria-live="assertive">
+        <div class="error-state-inner">
+          <div class="error-state-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h2 class="error-state-heading">Recipe not found</h2>
+          <p class="error-state-description" id="recipeErrorMessage">
+            We couldn't load the requested recipe. It may not exist or your connection is offline.
+          </p>
+          <div class="error-state-actions">
+            <a href="index.html" class="btn btn-primary">Return to Homepage</a>
+            <button type="button" class="btn btn-secondary" id="retryRecipeBtn">Try Again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recipe Content Container (Rendered by JS) -->
+      <article class="recipe-article" id="recipeArticle" hidden>
+
+        <!-- Recipe Hero Banner -->
+        <header class="recipe-hero-header">
+          <div class="recipe-hero-media">
+            <img
+              src=""
+              alt=""
+              id="recipeImage"
+              class="recipe-hero-img"
+              width="600"
+              height="450"
+            >
+            <button
+              type="button"
+              class="favorite-button favorite-button--large"
+              id="recipeFavoriteBtn"
+              aria-label="Add recipe to favorites"
+              aria-pressed="false"
+            >
+              <span class="favorite-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </span>
+            </button>
+          </div>
+
+          <div class="recipe-hero-info">
+            <div class="recipe-hero-tags" id="recipeTagsContainer">
+              <span class="badge badge-accent" id="recipeCategory">Category</span>
+              <span class="badge badge-subtle" id="recipeArea">Cuisine</span>
+            </div>
+
+            <h1 class="recipe-hero-title" id="recipeTitle">Recipe Title</h1>
+
+            <div class="recipe-quick-meta">
+              <div class="meta-item">
+                <span class="meta-label">Ingredients</span>
+                <strong class="meta-value" id="ingredientsCount">0 items</strong>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Category</span>
+                <strong class="meta-value" id="metaCategoryText">—</strong>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Origin</span>
+                <strong class="meta-value" id="metaAreaText">—</strong>
+              </div>
+            </div>
+
+            <div class="recipe-actions-bar">
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="heroFavoriteActionBtn"
+                aria-label="Save this recipe to your favorites"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                <span id="heroFavoriteBtnText">Save to Favorites</span>
+              </button>
+
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-secondary"
+                id="recipeYoutubeBtn"
+                style="display: none;"
+                aria-label="Watch video tutorial on YouTube"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                </svg>
+                <span>Watch on YouTube</span>
+              </a>
+
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-ghost"
+                id="recipeSourceBtn"
+                style="display: none;"
+                aria-label="View original recipe source"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                <span>Original Source</span>
+              </a>
+            </div>
+          </div>
+        </header>
+
+        <!-- Main Recipe Body: Two Column Layout -->
+        <div class="recipe-content-grid">
+
+          <!-- Left Column: Ingredients Checklist -->
+          <section class="recipe-section ingredients-card" aria-labelledby="ingredientsHeading">
+            <div class="section-title-wrap">
+              <h2 class="recipe-section-title" id="ingredientsHeading">Ingredients</h2>
+              <span class="ingredients-hint">Check off as you prep</span>
+            </div>
+
+            <ul class="ingredients-list" id="recipeIngredientsList" role="list">
+              <!-- Dynamically populated with checkboxes and measurements -->
+            </ul>
+          </section>
+
+          <!-- Right Column: Cooking Instructions -->
+          <section class="recipe-section instructions-card" aria-labelledby="instructionsHeading">
+            <div class="section-title-wrap">
+              <h2 class="recipe-section-title" id="instructionsHeading">Cooking Instructions</h2>
+            </div>
+
+            <div class="instructions-steps" id="recipeInstructions">
+              <!-- Dynamically populated steps -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Video Player Section (shown if YouTube URL exists) -->
+        <section class="recipe-video-section" id="recipeVideoSection" style="display: none;" aria-labelledby="videoHeading">
+          <div class="section-header">
+            <h2 class="section-heading" id="videoHeading">Video Tutorial</h2>
+            <p class="section-description">Follow along with the chef's step-by-step video guide.</p>
+          </div>
+          <div class="video-responsive-wrapper">
+            <iframe
+              id="recipeVideoFrame"
+              src=""
+              title="Recipe Video Tutorial"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </section>
+
+      </article>
+
+
+      <!-- Similar Recipes Section -->
+      <section class="similar-recipes-section section" id="similarRecipesSection" style="display: none;" aria-labelledby="similarHeading">
+        <div class="section-header">
+          <div class="section-header-text">
+            <h2 class="section-heading" id="similarHeading">Similar recipes you might enjoy</h2>
+            <p class="section-description">
+              More delicious dishes from the <span id="similarCategoryName" class="highlight-category"></span> category.
+            </p>
+          </div>
+        </div>
+
+        <div class="recipe-grid" id="similarRecipesGrid" aria-label="Similar recipes">
+          <!-- Dynamically populated by recipe.js -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer" id="siteFooter" aria-label="Site footer">
+    <div class="container footer-inner">
+
+      <div class="footer-top">
+
+        <!-- Footer Brand -->
+        <div class="footer-brand">
+          <a href="index.html" class="site-logo footer-logo" aria-label="Cookly homepage">
+            <span class="site-logo-mark" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+            </span>
+            <span class="site-logo-text">Cookly</span>
+          </a>
+          <p class="footer-tagline">Simple recipes. Better meals.</p>
+        </div>
+
+        <!-- Footer Navigation Columns -->
+        <nav class="footer-nav" aria-label="Footer navigation">
+
+          <div class="footer-nav-column">
+            <h3 class="footer-nav-heading">Explore</h3>
+            <ul class="footer-nav-list" role="list">
+              <li><a href="index.html#popularRecipes" class="footer-nav-link">Recipes</a></li>
+              <li><a href="index.html#categories" class="footer-nav-link">Categories</a></li>
+              <li><a href="index.html#randomCta" class="footer-nav-link">Random Recipe</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-nav-column">
+            <h3 class="footer-nav-heading">Account</h3>
+            <ul class="footer-nav-list" role="list">
+              <li><a href="favorites.html" class="footer-nav-link">Favorites</a></li>
+              <li><a href="index.html#recentSearchesSection" class="footer-nav-link">Recently Viewed</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-nav-column">
+            <h3 class="footer-nav-heading">Information</h3>
+            <ul class="footer-nav-list" role="list">
+              <li><a href="index.html#hero" class="footer-nav-link">About</a></li>
+              <li><a href="index.html#newsletter" class="footer-nav-link">Privacy</a></li>
+              <li><a href="index.html#newsletter" class="footer-nav-link">Contact</a></li>
+            </ul>
+          </div>
+
+        </nav>
+      </div>
+
+      <!-- Footer Bottom Bar -->
+      <div class="footer-bottom">
+        <p class="footer-copyright">
+          &copy; <span id="currentYear">2026</span> Cookly. All rights reserved.
+        </p>
+        <p class="footer-credit">
+          Recipe data powered by <a href="https://www.themealdb.com" class="footer-credit-link" target="_blank" rel="noopener noreferrer">TheMealDB</a>.
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- Toast Container & Live Region -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+  <div id="liveRegion" class="sr-only" aria-live="polite"></div>
+
+  <!-- JavaScript Module for Recipe Details Page -->
+  <script type="module" src="./js/recipe.js"></script>
+
+</body>
+</html>
