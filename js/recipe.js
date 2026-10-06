@@ -409,8 +409,8 @@ if (elements.retryRecipeBtn) {
 }
 
 // Surprise Me buttons
-async function handleSurpriseMe() {
-  const btn = elements.randomRecipeButton;
+async function handleSurpriseMe(e) {
+  const btn = e.currentTarget;
   if (btn) btn.disabled = true;
 
   try {

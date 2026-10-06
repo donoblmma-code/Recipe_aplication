@@ -37,7 +37,9 @@ const state = {
   activeCategory: null,
   currentQuery: "",
   loading: false,
-  lastSearchAction: null
+  lastSearchAction: null,
+  // Incremented per request so a slower, older response cannot overwrite newer results
+  searchRequestId: 0
 };
 
 /* --------------------------------------------------------------------------
@@ -195,14 +197,17 @@ async function loadPopularRecipes() {
 /* --------------------------------------------------------------------------
    Search & Filter Execution
    -------------------------------------------------------------------------- */
-async function executeSearch(query) {
+async function executeSearch(query, { saveToHistory = true } = {}) {
   if (!query || !query.trim()) return;
   const clean = query.trim();
+  const requestId = ++state.searchRequestId;
 
   state.currentQuery = clean;
   state.lastSearchAction = () => executeSearch(clean);
-  saveRecentSearch(clean);
-  renderRecentSearchesList();
+  if (saveToHistory) {
+    saveRecentSearch(clean);
+    renderRecentSearchesList();
+  }
 
   // Reveal search results section and hide other states
   if (elements.searchResultsSection) elements.searchResultsSection.hidden = false;
@@ -219,6 +224,7 @@ async function executeSearch(query) {
 
   try {
     const meals = await searchRecipes(clean);
+    if (requestId !== state.searchRequestId) return;
     state.searchResults = meals || [];
 
     if (state.searchResults.length === 0) {
@@ -235,6 +241,7 @@ async function executeSearch(query) {
 
     renderRecipes(state.searchResults, elements.searchResultsGrid, getFavoriteIdsSet());
   } catch (err) {
+    if (requestId !== state.searchRequestId) return;
     console.error("Search failed:", err);
     elements.searchResultsGrid.innerHTML = "";
     if (elements.searchResultsCount) elements.searchResultsCount.textContent = "Error occurred";
@@ -249,6 +256,7 @@ async function executeSearch(query) {
  */
 async function executeCategoryFilter(category) {
   if (!category) return;
+  const requestId = ++state.searchRequestId;
 
   state.currentQuery = category;
   state.lastSearchAction = () => executeCategoryFilter(category);
@@ -264,6 +272,7 @@ async function executeCategoryFilter(category) {
 
   try {
     const meals = await getRecipesByCategory(category);
+    if (requestId !== state.searchRequestId) return;
     state.searchResults = meals || [];
 
     if (state.searchResults.length === 0) {
@@ -278,6 +287,7 @@ async function executeCategoryFilter(category) {
 
     renderRecipes(state.searchResults, elements.searchResultsGrid, getFavoriteIdsSet(), category);
   } catch (err) {
+    if (requestId !== state.searchRequestId) return;
     console.error("Category filter failed:", err);
     elements.searchResultsGrid.innerHTML = "";
     if (elements.errorState) elements.errorState.hidden = false;
@@ -288,6 +298,8 @@ async function executeCategoryFilter(category) {
  * Reset and close search view
  */
 function closeSearch() {
+  debouncedSearch.cancel();
+  state.searchRequestId++;
   if (elements.searchResultsSection) elements.searchResultsSection.hidden = true;
   if (elements.searchInput) elements.searchInput.value = "";
   state.currentQuery = "";
@@ -298,24 +310,25 @@ function closeSearch() {
    Event Listeners
    -------------------------------------------------------------------------- */
 
-// 1. Search Form Submission
-if (elements.searchForm) {
-  elements.searchForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const val = elements.searchInput?.value.trim();
-    if (val) executeSearch(val);
+// 1. Debounced search on input (min 3 chars); live typing is not saved to history
+const debouncedSearch = debounce((val) => {
+  if (val.length >= 3) executeSearch(val, { saveToHistory: false });
+}, 450);
+
+if (elements.searchInput) {
+  elements.searchInput.addEventListener("input", (e) => {
+    const val = e.target.value.trim();
+    debouncedSearch(val);
   });
 }
 
-// 2. Debounced search on input (min 3 chars)
-if (elements.searchInput) {
-  const debounced = debounce((val) => {
-    if (val.length >= 3) executeSearch(val);
-  }, 450);
-
-  elements.searchInput.addEventListener("input", (e) => {
-    const val = e.target.value.trim();
-    debounced(val);
+// 2. Search Form Submission
+if (elements.searchForm) {
+  elements.searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    debouncedSearch.cancel();
+    const val = elements.searchInput?.value.trim();
+    if (val) executeSearch(val);
   });
 }
 

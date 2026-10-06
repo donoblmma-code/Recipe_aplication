@@ -45,12 +45,14 @@ export function getQueryParameter(name) {
  * Debounce function to limit rapid calls
  * @param {Function} fn
  * @param {number} delayMs
- * @returns {Function}
+ * @returns {Function} debounced function with a `cancel()` method
  */
 export function debounce(fn, delayMs = 300) {
   let timeoutId;
-  return function (...args) {
+  const debounced = function (...args) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), delayMs);
   };
+  debounced.cancel = () => clearTimeout(timeoutId);
+  return debounced;
 }

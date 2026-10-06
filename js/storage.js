@@ -12,7 +12,8 @@ const RECENT_SEARCHES_KEY = "recipe_app_recent_searches";
 export function getFavorites() {
   try {
     const data = localStorage.getItem(FAVORITES_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    const parsed = data ? JSON.parse(data) : [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
     console.error("Error reading favorites from localStorage", err);
     return [];
@@ -99,7 +100,8 @@ export function saveRecentSearch(query) {
 export function getRecentSearches() {
   try {
     const data = localStorage.getItem(RECENT_SEARCHES_KEY);
-    return data ? JSON.parse(data) : [];
+    const parsed = data ? JSON.parse(data) : [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
     return [];
   }

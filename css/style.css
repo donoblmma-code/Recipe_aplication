@@ -680,6 +680,10 @@
   background-color: #ffffff;
 }
 
+.favorite-button--large.is-favorite {
+  color: #e11d48;
+}
+
 .recipe-hero-info {
   padding: var(--space-2xl);
   display: flex;

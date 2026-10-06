@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your saved recipes on Cookly.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Your Favorites — Cookly</title>
+
+  <!-- Preconnect to API and Image CDN -->
+  <link rel="preconnect" href="https://www.themealdb.com">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/reset.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+
+      <!-- Logo -->
+      <a href="index.html" class="site-logo" aria-label="Cookly — Go to homepage">
+        <span class="site-logo-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+        </span>
+        <span class="site-logo-text">Cookly</span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="primary-nav" id="primaryNav" aria-label="Primary navigation">
+        <ul class="nav-list" role="list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="index.html#categories" class="nav-link">Explore</a>
+          </li>
+          <li class="nav-item">
+            <a href="favorites.html" class="nav-link nav-link--active" aria-current="page">
+              Favorites
+              <span class="nav-badge" id="headerFavoritesCount" aria-label="favorites count" style="display: none;">0</span>
+            </a>
+          </li>
+        </ul>
+
+        <button
+          type="button"
+          class="btn btn-primary btn-surprise"
+          id="randomRecipeButton"
+          aria-label="Get a random recipe suggestion"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          <span>Surprise Me</span>
+        </button>
+      </nav>
+
+      <!-- Mobile Hamburger Button -->
+      <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileNavigation"
+      >
+        <span class="hamburger-bar" aria-hidden="true"></span>
+        <span class="hamburger-bar" aria-hidden="true"></span>
+        <span class="hamburger-bar" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav
+      class="mobile-nav"
+      id="mobileNavigation"
+      aria-label="Mobile navigation"
+      hidden
+    >
+      <ul class="mobile-nav-list" role="list">
+        <li><a href="index.html" class="mobile-nav-link">Home</a></li>
+        <li><a href="index.html#categories" class="mobile-nav-link">Explore</a></li>
+        <li>
+          <a href="favorites.html" class="mobile-nav-link" aria-current="page">
+            Favorites
+            <span class="nav-badge mobile-fav-badge" style="display: none;">0</span>
+          </a>
+        </li>
+      </ul>
+      <button
+        type="button"
+        class="btn btn-primary btn-surprise btn-full"
+        id="randomRecipeButtonMobile"
+        aria-label="Get a random recipe suggestion"
+      >
+        Surprise Me
+      </button>
+    </nav>
+  </header>
+
+
+  <!-- ============================================================
+       MAIN CONTENT: FAVORITES
+       ============================================================ -->
+  <main class="site-main" id="mainContent">
+    <section class="favorites-page-section section" aria-labelledby="favoritesPageHeading">
+      <div class="container">
+
+        <div class="section-header">
+          <div class="section-header-text">
+            <h1 class="section-heading" id="favoritesPageHeading">Your favorites</h1>
+            <p class="section-description">
+              <span id="favoritesCount" aria-live="polite">0 saved recipes</span>
+            </p>
+          </div>
+          <a href="index.html" class="btn btn-secondary">Find more recipes</a>
+        </div>
+
+        <div
+          class="recipe-grid"
+          id="favoritesGrid"
+          aria-label="Saved recipes"
+          aria-live="polite"
+        ></div>
+
+      </div>
+    </section>
+  </main>
+
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer" id="siteFooter" aria-label="Site footer">
+    <div class="container footer-inner">
+
+      <div class="footer-top">
+
+        <!-- Footer Brand -->
+        <div class="footer-brand">
+          <a href="index.html" class="site-logo footer-logo" aria-label="Cookly homepage">
+            <span class="site-logo-mark" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+            </span>
+            <span class="site-logo-text">Cookly</span>
+          </a>
+          <p class="footer-tagline">Simple recipes. Better meals.</p>
+        </div>
+
+        <!-- Footer Navigation Columns -->
+        <nav class="footer-nav" aria-label="Footer navigation">
+
+          <div class="footer-nav-column">
+            <h3 class="footer-nav-heading">Explore</h3>
+            <ul class="footer-nav-list" role="list">
+              <li><a href="index.html#popularRecipes" class="footer-nav-link">Recipes</a></li>
+              <li><a href="index.html#categories" class="footer-nav-link">Categories</a></li>
+              <li><a href="index.html#randomCta" class="footer-nav-link">Random Recipe</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-nav-column">
+            <h3 class="footer-nav-heading">Account</h3>
+            <ul class="footer-nav-list" role="list">
+              <li><a href="favorites.html" class="footer-nav-link">Favorites</a></li>
+              <li><a href="index.html#recentSearchesSection" class="footer-nav-link">Recently Viewed</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-nav-column">
+            <h3 class="footer-nav-heading">Information</h3>
+            <ul class="footer-nav-list" role="list">
+              <li><a href="index.html#hero" class="footer-nav-link">About</a></li>
+              <li><a href="index.html#newsletter" class="footer-nav-link">Privacy</a></li>
+              <li><a href="index.html#newsletter" class="footer-nav-link">Contact</a></li>
+            </ul>
+          </div>
+
+        </nav>
+      </div>
+
+      <!-- Footer Bottom Bar -->
+      <div class="footer-bottom">
+        <p class="footer-copyright">
+          &copy; <span id="currentYear">2026</span> Cookly. All rights reserved.
+        </p>
+        <p class="footer-credit">
+          Recipe data powered by <a href="https://www.themealdb.com" class="footer-credit-link" target="_blank" rel="noopener noreferrer">TheMealDB</a>.
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- JavaScript Module for Favorites Page -->
+  <script type="module" src="./js/favorites.js"></script>
+
+</body>
+</html>
