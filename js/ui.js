@@ -2,7 +2,9 @@
  * UI Rendering and DOM manipulation module
  */
 
+import { createNutritionCardHTML } from "./nutrition-ui.js";
 import { truncateText, sanitizeText } from "./utils.js";
+import { t, translateCategory, translateArea } from "./i18n.js";
 
 const PREVIEW_SUFFIX = "/preview";
 
@@ -21,13 +23,22 @@ const SVG_HEART = `
  */
 export function createRecipeCardHTML(recipe, isFav = false, fallbackCategory = "") {
   const title = sanitizeText(recipe.strMeal);
-  const category = sanitizeText(recipe.strCategory || fallbackCategory || "Recipe");
-  const area = recipe.strArea ? sanitizeText(recipe.strArea) : "";
+  const rawCategory = recipe.strCategory || fallbackCategory || "Recipe";
+  const categoryDisplay = sanitizeText(translateCategory(rawCategory));
+  const rawArea = recipe.strArea ? sanitizeText(recipe.strArea) : "";
+  const areaDisplay = rawArea ? sanitizeText(translateArea(rawArea)) : "";
   const thumb = recipe.strMealThumb;
   // Favorites saved from a card already store the preview URL.
   const image = thumb
     ? (thumb.endsWith(PREVIEW_SUFFIX) ? thumb : `${thumb}${PREVIEW_SUFFIX}`)
     : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' fill='%23ece7df'%3E%3Crect width='100%25' height='100%25'/%3E%3C/svg%3E";
+
+  const favAriaLabel = isFav
+    ? t("remove_from_favorites_aria", { title })
+    : t("add_to_favorites_aria", { title });
+  const favTitle = isFav ? t("remove_from_favorites") : t("save_to_favorites");
+  const viewRecipeAria = t("view_recipe_for", { title });
+  const viewRecipeText = t("view_recipe");
 
   return `
     <article class="recipe-card" data-recipe-id="${recipe.idMeal}" data-id="${recipe.idMeal}">
@@ -48,9 +59,9 @@ export function createRecipeCardHTML(recipe, isFav = false, fallbackCategory = "
           data-role="favorite"
           data-id="${recipe.idMeal}"
           data-recipe-id="${recipe.idMeal}"
-          aria-label="${isFav ? `Remove ${title} from favorites` : `Add ${title} to favorites`}"
+          aria-label="${favAriaLabel}"
           aria-pressed="${isFav ? "true" : "false"}"
-          title="${isFav ? "Remove from favorites" : "Save to favorites"}"
+          title="${favTitle}"
         >
           <span class="favorite-icon" aria-hidden="true">
             ${SVG_HEART}
@@ -59,19 +70,20 @@ export function createRecipeCardHTML(recipe, isFav = false, fallbackCategory = "
       </div>
       <div class="recipe-card-content recipe-card-body">
         <div class="recipe-card-meta">
-          <span class="recipe-card-category badge badge-accent">${category}</span>
-          ${area ? `<span class="recipe-card-area badge badge-subtle">${area}</span>` : ""}
+          <span class="recipe-card-category badge badge-accent">${categoryDisplay}</span>
+          ${areaDisplay ? `<span class="recipe-card-area badge badge-subtle">${areaDisplay}</span>` : ""}
         </div>
         <h3 class="recipe-card-title" title="${title}">
           ${truncateText(title, 48)}
         </h3>
+        ${createNutritionCardHTML(recipe)}
         <div class="recipe-card-footer">
           <a
             href="recipe.html?id=${encodeURIComponent(recipe.idMeal)}"
             class="btn btn-secondary recipe-card-link"
-            aria-label="View recipe for ${title}"
+            aria-label="${viewRecipeAria}"
           >
-            <span>View Recipe</span>
+            <span>${viewRecipeText}</span>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
@@ -118,13 +130,14 @@ export function renderCategories(categories, container, activeCategory = "All") 
       role="tab"
       aria-selected="${activeCategory === "All"}"
     >
-      All Recipes
+      ${t("all_recipes")}
     </button>
   `;
 
   const chips = (categories || [])
     .map((cat) => {
       const name = sanitizeText(cat.strCategory);
+      const translatedName = sanitizeText(translateCategory(cat.strCategory));
       const isActive = activeCategory && activeCategory.toLowerCase() === name.toLowerCase();
       return `
         <button
@@ -134,7 +147,7 @@ export function renderCategories(categories, container, activeCategory = "All") 
           role="tab"
           aria-selected="${isActive}"
         >
-          ${name}
+          ${translatedName}
         </button>
       `;
     })

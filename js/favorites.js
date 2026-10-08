@@ -12,6 +12,12 @@ import {
   updateFavoritesBadge
 } from "./ui.js";
 
+import {
+  initI18n,
+  onLanguageChange,
+  t
+} from "./i18n.js";
+
 /* --------------------------------------------------------------------------
    DOM Elements
    -------------------------------------------------------------------------- */
@@ -35,7 +41,13 @@ function renderFavoritesPage() {
   updateFavoritesBadge(favs.length);
 
   if (elements.favoritesCount) {
-    elements.favoritesCount.textContent = `${favs.length} saved recipe${favs.length === 1 ? "" : "s"}`;
+    if (favs.length === 0) {
+      elements.favoritesCount.textContent = t("favorites_count_zero");
+    } else if (favs.length === 1) {
+      elements.favoritesCount.textContent = t("favorites_count_single");
+    } else {
+      elements.favoritesCount.textContent = t("favorites_count_text", { count: favs.length });
+    }
   }
 
   if (!elements.favoritesGrid) return;
@@ -43,8 +55,8 @@ function renderFavoritesPage() {
   if (favs.length === 0) {
     elements.favoritesGrid.innerHTML = `
       <div class="empty-favorites-box" style="grid-column: 1 / -1;">
-        <p class="empty-favorites-text">You haven't saved any recipes yet.</p>
-        <p class="empty-favorites-sub">Click the heart icon on any recipe to save it here for later.</p>
+        <p class="empty-favorites-text">${t("empty_favorites_title")}</p>
+        <p class="empty-favorites-sub">${t("empty_favorites_desc")}</p>
       </div>
     `;
     return;
@@ -67,9 +79,9 @@ if (elements.favoritesGrid) {
     const id = favBtn.dataset.id || favBtn.dataset.recipeId;
     if (!id) return;
 
-    const title = favBtn.closest(".recipe-card")?.querySelector(".recipe-card-title")?.textContent.trim() || "Recipe";
+    const title = favBtn.closest(".recipe-card")?.querySelector(".recipe-card-title")?.textContent.trim() || t("recipe_default_category");
     removeFavorite(id);
-    showToast(`Removed "${title}" from favorites`, "info");
+    showToast(t("toast_removed_fav", { title }), "info");
     renderFavoritesPage();
   });
 }
@@ -85,7 +97,7 @@ async function handleSurpriseMe(e) {
       window.location.href = `recipe.html?id=${encodeURIComponent(meal.idMeal)}`;
     }
   } catch (err) {
-    showToast("Could not pick a random recipe right now", "info");
+    showToast(t("toast_random_error"), "info");
     if (btn) btn.disabled = false;
   }
 }
@@ -109,10 +121,17 @@ if (elements.mobileMenuButton && elements.mobileNavigation) {
 // Keep the list in sync when favorites change in another tab
 window.addEventListener("storage", renderFavoritesPage);
 
+// Re-render when language changes
+onLanguageChange(() => {
+  renderFavoritesPage();
+});
+
 /* --------------------------------------------------------------------------
    Initialization
    -------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
+  initI18n();
+
   if (elements.currentYear) {
     elements.currentYear.textContent = String(new Date().getFullYear());
   }

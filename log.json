@@ -1,0 +1,35 @@
+{
+    "timestamp": "2026-07-28T16:20:45.102Z",
+    "level": "ERROR",
+    "logger": "app.services.payment_gateway",
+    "environment": "production",
+    "trace_id": "req-9a8b7c6d-5432-10fe-dcba-0987654321ba",
+    "http_method": "POST",
+    "endpoint": "/api/v1/checkout/process",
+    "status_code": 500,
+    "client_ip": "192.168.1.104",
+    "user_id": "usr_882941",
+    "message": "Unhandled Exception: HTTP 500 Internal Server Error raised while processing payment payload",
+    "context": {
+      "cart_id": "cart_99011",
+      "amount": 149.99,
+      "currency": "USD",
+      "retry_attempt": 0
+    },
+    "exception": {
+      "type": "requests.exceptions.HTTPError",
+      "message": "500 Server Error: Internal Server Error for url: https://api.payment-provider.internal/v2/charge",
+      "stacktrace": [
+        "File \"/app/main.py\", line 18, in handle_checkout_request",
+        "    response = payment_service.process_payment(user_id=data['user_id'], cart_data=data)",
+        "File \"/app/services/payment_gateway.py\", line 42, in process_payment",
+        "    payload = self._build_payload(user_id, cart_data)",
+        "File \"/app/services/payment_gateway.py\", line 75, in _build_payload",
+        "    auth_token = self.auth_client.get_active_token()",
+        "File \"/app/services/payment_gateway.py\", line 98, in get_active_token",
+        "    response.raise_for_status()",
+        "File \"/usr/local/lib/python3.11/site-packages/requests/models.py\", line 1021, in raise_for_status",
+        "    raise HTTPError(http_error_msg, response=self)"
+      ]
+    }
+  }

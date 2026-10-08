@@ -36,7 +36,8 @@ export function saveFavorite(recipe) {
         strMeal: recipe.strMeal,
         strMealThumb: recipe.strMealThumb,
         strCategory: recipe.strCategory || "Recipe",
-        strArea: recipe.strArea || "International"
+        strArea: recipe.strArea || "International",
+        ...Object.fromEntries(Object.entries(recipe).filter(([key]) => /^str(?:Ingredient|Measure)\d+$/.test(key)))
       });
       localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
       return true;

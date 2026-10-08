@@ -2,6 +2,8 @@
  * Controller for the recipe details page (recipe.html)
  */
 
+import { renderNutritionPanel } from "./nutrition-ui.js";
+
 import {
   getRecipeById,
   getRecipesByCategory,
@@ -26,6 +28,14 @@ import {
   sanitizeText
 } from "./utils.js";
 
+import {
+  initI18n,
+  onLanguageChange,
+  t,
+  translateCategory,
+  translateArea
+} from "./i18n.js";
+
 /* --------------------------------------------------------------------------
    State
    -------------------------------------------------------------------------- */
@@ -49,6 +59,8 @@ const elements = {
   recipeArea: document.querySelector("#recipeArea"),
   metaCategoryText: document.querySelector("#metaCategoryText"),
   metaAreaText: document.querySelector("#metaAreaText"),
+  metaSugarText: document.querySelector("#metaSugarText"),
+  metaCaloriesText: document.querySelector("#metaCaloriesText"),
   ingredientsCount: document.querySelector("#ingredientsCount"),
   recipeIngredientsList: document.querySelector("#recipeIngredientsList"),
   recipeInstructions: document.querySelector("#recipeInstructions"),
@@ -68,6 +80,7 @@ const elements = {
   similarRecipesSection: document.querySelector("#similarRecipesSection"),
   similarCategoryName: document.querySelector("#similarCategoryName"),
   similarRecipesGrid: document.querySelector("#similarRecipesGrid"),
+  similarRecipesSubtitle: document.querySelector("#similarRecipesSubtitle"),
 
   // Header & Nav
   randomRecipeButton: document.querySelector("#randomRecipeButton"),
@@ -92,17 +105,17 @@ function syncFavoritesUI() {
       elements.recipeFavoriteBtn.setAttribute("aria-pressed", String(favorited));
       elements.recipeFavoriteBtn.setAttribute(
         "aria-label",
-        favorited ? "Remove from favorites" : "Add to favorites"
+        favorited ? t("remove_from_favorites") : t("save_to_favorites")
       );
     }
 
     if (elements.heroFavoriteActionBtn && elements.heroFavoriteBtnText) {
       if (favorited) {
         elements.heroFavoriteActionBtn.classList.add("btn-favorited");
-        elements.heroFavoriteBtnText.textContent = "Saved to Favorites";
+        elements.heroFavoriteBtnText.textContent = t("saved_to_favorites");
       } else {
         elements.heroFavoriteActionBtn.classList.remove("btn-favorited");
-        elements.heroFavoriteBtnText.textContent = "Save to Favorites";
+        elements.heroFavoriteBtnText.textContent = t("save_to_favorites");
       }
     }
   }
@@ -119,10 +132,10 @@ function handleFavoriteToggle() {
 
   if (currentlyFavorite) {
     removeFavorite(id);
-    showToast(`Removed "${currentRecipe.strMeal}" from favorites`, "info");
+    showToast(t("toast_removed_fav", { title: currentRecipe.strMeal }), "info");
   } else {
     saveFavorite(currentRecipe);
-    showToast(`Saved "${currentRecipe.strMeal}" to favorites!`, "success");
+    showToast(t("toast_saved_fav", { title: currentRecipe.strMeal }), "success");
   }
 
   syncFavoritesUI();
@@ -172,7 +185,7 @@ function getYouTubeEmbedUrl(url) {
    -------------------------------------------------------------------------- */
 async function loadRecipeDetails() {
   if (!recipeId) {
-    showError("No recipe specified. Please choose a recipe from the homepage.");
+    showError(t("recipe_not_found_desc"));
     return;
   }
 
@@ -185,7 +198,7 @@ async function loadRecipeDetails() {
     const meal = await getRecipeById(recipeId);
 
     if (!meal) {
-      showError("Recipe not found. It may have been removed or the ID is invalid.");
+      showError(t("recipe_invalid_desc"));
       return;
     }
 
@@ -198,7 +211,7 @@ async function loadRecipeDetails() {
     }
   } catch (error) {
     console.error("Failed to load recipe details", error);
-    showError("Could not load the recipe. Please check your internet connection.");
+    showError(t("recipe_network_error"));
   }
 }
 
@@ -221,18 +234,25 @@ function renderRecipePage(meal) {
     };
   }
 
-  const category = meal.strCategory || "Recipe";
-  const area = meal.strArea || "International";
+  const categoryRaw = meal.strCategory || "Recipe";
+  const areaRaw = meal.strArea || "International";
 
-  if (elements.recipeCategory) elements.recipeCategory.textContent = category;
-  if (elements.recipeArea) elements.recipeArea.textContent = area;
-  if (elements.metaCategoryText) elements.metaCategoryText.textContent = category;
-  if (elements.metaAreaText) elements.metaAreaText.textContent = area;
+  const categoryTranslated = translateCategory(categoryRaw);
+  const areaTranslated = translateArea(areaRaw);
+
+  if (elements.recipeCategory) elements.recipeCategory.textContent = categoryTranslated;
+  if (elements.recipeArea) elements.recipeArea.textContent = areaTranslated;
+  if (elements.metaCategoryText) elements.metaCategoryText.textContent = categoryTranslated;
+  if (elements.metaAreaText) elements.metaAreaText.textContent = areaTranslated;
+
+  renderNutritionPanel(meal);
 
   // Render Ingredients Checklist
   const ingredients = extractIngredients(meal);
   if (elements.ingredientsCount) {
-    elements.ingredientsCount.textContent = `${ingredients.length} items`;
+    elements.ingredientsCount.textContent = ingredients.length === 1
+      ? t("recipe_ingredients_count_single")
+      : t("recipe_ingredients_count", { count: ingredients.length });
   }
 
   if (elements.recipeIngredientsList) {
@@ -263,13 +283,11 @@ function renderRecipePage(meal) {
   // Render Instructions Steps
   if (elements.recipeInstructions) {
     const rawText = meal.strInstructions || "";
-    // Split by double newline or line breaks
     const steps = rawText
       .split(/\r?\n/)
       .map((s) => s.trim())
       .filter((s) => s.length > 0 && !s.toLowerCase().startsWith("step"));
 
-    // If splitting gives too few items, split by sentences
     const cleanSteps = steps.length > 1 ? steps : rawText.split(/(?<=[.!?])\s+/).filter(Boolean);
 
     elements.recipeInstructions.innerHTML = cleanSteps
@@ -320,12 +338,17 @@ function renderRecipePage(meal) {
 async function loadSimilarRecipes(category, currentId) {
   try {
     const meals = await getRecipesByCategory(category);
-    // Exclude current meal and take top 4
     const filtered = (meals || []).filter((m) => m.idMeal !== currentId).slice(0, 4);
 
     if (filtered.length > 0 && elements.similarRecipesSection && elements.similarRecipesGrid) {
+      const translatedCat = translateCategory(category);
       if (elements.similarCategoryName) {
-        elements.similarCategoryName.textContent = category;
+        elements.similarCategoryName.textContent = translatedCat;
+      }
+      if (elements.similarRecipesSubtitle) {
+        elements.similarRecipesSubtitle.innerHTML = t("recipe_similar_subtitle", {
+          category: `<span class="highlight-category">${translatedCat}</span>`
+        });
       }
 
       const favIds = new Set(getFavorites().map((f) => f.idMeal));
@@ -379,13 +402,13 @@ if (elements.similarRecipesGrid) {
 
     const isFav = isFavorite(id);
     const card = favBtn.closest(".recipe-card");
-    const title = card ? card.querySelector(".recipe-card-title")?.textContent.trim() : "Recipe";
+    const title = card ? card.querySelector(".recipe-card-title")?.textContent.trim() : t("recipe_default_category");
 
     if (isFav) {
       removeFavorite(id);
       favBtn.classList.remove("is-favorite");
       favBtn.setAttribute("aria-pressed", "false");
-      showToast(`Removed "${title}" from favorites`, "info");
+      showToast(t("toast_removed_fav", { title }), "info");
     } else {
       const img = card?.querySelector(".recipe-card-img")?.src;
       saveFavorite({
@@ -396,7 +419,7 @@ if (elements.similarRecipesGrid) {
       });
       favBtn.classList.add("is-favorite");
       favBtn.setAttribute("aria-pressed", "true");
-      showToast(`Saved "${title}" to favorites!`, "success");
+      showToast(t("toast_saved_fav", { title }), "success");
     }
 
     syncFavoritesUI();
@@ -419,7 +442,7 @@ async function handleSurpriseMe(e) {
       window.location.href = `recipe.html?id=${encodeURIComponent(meal.idMeal)}`;
     }
   } catch (err) {
-    showToast("Could not pick a random recipe right now", "info");
+    showToast(t("toast_random_error"), "info");
     if (btn) btn.disabled = false;
   }
 }
@@ -440,10 +463,22 @@ if (elements.mobileMenuButton && elements.mobileNavigation) {
   });
 }
 
+// Handle language changes dynamically
+onLanguageChange(() => {
+  if (currentRecipe) {
+    renderRecipePage(currentRecipe);
+    if (currentRecipe.strCategory) {
+      loadSimilarRecipes(currentRecipe.strCategory, currentRecipe.idMeal);
+    }
+  }
+});
+
 /* --------------------------------------------------------------------------
    Initialization
    -------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
+  initI18n();
+
   if (elements.currentYear) {
     elements.currentYear.textContent = String(new Date().getFullYear());
   }

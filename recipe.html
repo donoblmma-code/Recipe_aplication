@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="View full cooking instructions, ingredients, measurements, and video tutorials on Cookly.">
   <meta name="theme-color" content="#ffffff">
-  <title>Recipe Details — Cookly</title>
+  <title data-i18n-page-title="page_title_recipe">Recipe Details — Cookly</title>
 
   <!-- Preconnect to API and Image CDN -->
   <link rel="preconnect" href="https://www.themealdb.com">
@@ -43,31 +43,46 @@
       <nav class="primary-nav" id="primaryNav" aria-label="Primary navigation">
         <ul class="nav-list" role="list">
           <li class="nav-item">
-            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html" class="nav-link" data-i18n="nav_home">Home</a>
           </li>
           <li class="nav-item">
-            <a href="index.html#categories" class="nav-link">Explore</a>
+            <a href="index.html#categories" class="nav-link" data-i18n="nav_explore">Explore</a>
           </li>
           <li class="nav-item">
             <a href="favorites.html" class="nav-link">
-              Favorites
-              <span class="nav-badge" id="headerFavoritesCount" aria-label="favorites count" style="display: none;">0</span>
+              <span data-i18n="nav_favorites">Favorites</span>
+              <span class="nav-badge" id="headerFavoritesCount" aria-label="favorites count" data-i18n-attr="aria-label:favorites_count_badge" style="display: none;">0</span>
             </a>
           </li>
         </ul>
+
+        <!-- Language Selector -->
+        <div class="lang-selector" aria-label="Language selector">
+          <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <select class="lang-select" aria-label="Language" data-i18n-attr="aria-label:nav_lang_label">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ru">Русский</option>
+          </select>
+        </div>
 
         <button
           type="button"
           class="btn btn-primary btn-surprise"
           id="randomRecipeButton"
           aria-label="Get a random recipe suggestion"
+          data-i18n-attr="aria-label:nav_surprise_me"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="23 4 23 10 17 10"></polyline>
             <polyline points="1 20 1 14 7 14"></polyline>
             <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
           </svg>
-          <span>Surprise Me</span>
+          <span data-i18n="nav_surprise_me">Surprise Me</span>
         </button>
       </nav>
 
@@ -77,6 +92,7 @@
         class="mobile-menu-button"
         id="mobileMenuButton"
         aria-label="Open navigation menu"
+        data-i18n-attr="aria-label:nav_open_menu"
         aria-expanded="false"
         aria-controls="mobileNavigation"
       >
@@ -94,17 +110,30 @@
       hidden
     >
       <ul class="mobile-nav-list" role="list">
-        <li><a href="index.html" class="mobile-nav-link">Home</a></li>
-        <li><a href="index.html#categories" class="mobile-nav-link">Explore</a></li>
-        <li><a href="favorites.html" class="mobile-nav-link">Favorites</a></li>
+        <li><a href="index.html" class="mobile-nav-link" data-i18n="nav_home">Home</a></li>
+        <li><a href="index.html#categories" class="mobile-nav-link" data-i18n="nav_explore">Explore</a></li>
+        <li><a href="favorites.html" class="mobile-nav-link" data-i18n="nav_favorites">Favorites</a></li>
       </ul>
+
+      <div class="mobile-lang-row">
+        <span class="mobile-lang-label" data-i18n="nav_lang_label">Language</span>
+        <div class="lang-selector">
+          <select class="lang-select" aria-label="Language" data-i18n-attr="aria-label:nav_lang_label">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ru">Русский</option>
+          </select>
+        </div>
+      </div>
+
       <button
         type="button"
         class="btn btn-primary btn-surprise btn-full"
         id="randomRecipeButtonMobile"
         aria-label="Get a random recipe suggestion"
+        data-i18n-attr="aria-label:nav_surprise_me"
       >
-        Surprise Me
+        <span data-i18n="nav_surprise_me">Surprise Me</span>
       </button>
     </nav>
   </header>
@@ -123,7 +152,7 @@
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
-          <span>Back to recipes</span>
+          <span data-i18n="recipe_back">Back to recipes</span>
         </a>
       </nav>
 
@@ -148,13 +177,13 @@
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
           </div>
-          <h2 class="error-state-heading">Recipe not found</h2>
-          <p class="error-state-description" id="recipeErrorMessage">
-            We couldn't load the requested recipe. It may not exist or your connection is offline.
+          <h2 class="error-state-heading" id="recipeErrorHeading" data-i18n="recipe_not_found_title">Recipe not found</h2>
+          <p class="error-state-description" id="recipeErrorMessage" data-i18n="recipe_network_error">
+            Could not load the recipe. Please check your internet connection.
           </p>
           <div class="error-state-actions">
-            <a href="index.html" class="btn btn-primary">Return to Homepage</a>
-            <button type="button" class="btn btn-secondary" id="retryRecipeBtn">Try Again</button>
+            <a href="index.html" class="btn btn-primary" data-i18n="recipe_back_home">Back to Home</a>
+            <button type="button" class="btn btn-secondary" id="retryRecipeBtn" data-i18n="retry">Try Again</button>
           </div>
         </div>
       </div>
@@ -190,26 +219,36 @@
 
           <div class="recipe-hero-info">
             <div class="recipe-hero-tags" id="recipeTagsContainer">
-              <span class="badge badge-accent" id="recipeCategory">Category</span>
-              <span class="badge badge-subtle" id="recipeArea">Cuisine</span>
+              <span class="badge badge-accent" id="recipeCategory">Recipe</span>
+              <span class="badge badge-subtle" id="recipeArea">International</span>
             </div>
 
             <h1 class="recipe-hero-title" id="recipeTitle">Recipe Title</h1>
 
             <div class="recipe-quick-meta">
               <div class="meta-item">
-                <span class="meta-label">Ingredients</span>
+                <span class="meta-label" data-i18n="recipe_ingredients_heading">Ingredients</span>
                 <strong class="meta-value" id="ingredientsCount">0 items</strong>
               </div>
               <div class="meta-item">
-                <span class="meta-label">Category</span>
+                <span class="meta-label" data-i18n="footer_link_categories">Category</span>
                 <strong class="meta-value" id="metaCategoryText">—</strong>
               </div>
               <div class="meta-item">
-                <span class="meta-label">Origin</span>
+                <span class="meta-label" data-i18n="recipe_default_area">Origin</span>
                 <strong class="meta-value" id="metaAreaText">—</strong>
               </div>
+              <div class="meta-item">
+                <span class="meta-label" data-i18n="nutrition_sugar">Total Sugar</span>
+                <strong class="meta-value" id="metaSugarText">—</strong>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label" data-i18n="nutrition_calories">Calories</span>
+                <strong class="meta-value" id="metaCaloriesText">—</strong>
+              </div>
             </div>
+
+            <p class="nutrition-note" id="metaNutritionStatus"></p>
 
             <div class="recipe-actions-bar">
               <button
@@ -221,7 +260,7 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
-                <span id="heroFavoriteBtnText">Save to Favorites</span>
+                <span id="heroFavoriteBtnText" data-i18n="save_to_favorites">Save to Favorites</span>
               </button>
 
               <a
@@ -236,7 +275,7 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
                 </svg>
-                <span>Watch on YouTube</span>
+                <span data-i18n="recipe_watch_youtube">Watch on YouTube</span>
               </a>
 
               <a
@@ -253,11 +292,15 @@
                   <polyline points="15 3 21 3 21 9"></polyline>
                   <line x1="10" y1="14" x2="21" y2="3"></line>
                 </svg>
-                <span>Original Source</span>
+                <span data-i18n="recipe_original_source">Original Recipe</span>
               </a>
             </div>
           </div>
         </header>
+
+        <section class="recipe-section nutrition-section" id="recipeNutrition" aria-labelledby="nutritionHeading">
+          <!-- Nutrition facts and controls rendered by nutrition-ui.js -->
+        </section>
 
         <!-- Main Recipe Body: Two Column Layout -->
         <div class="recipe-content-grid">
@@ -265,8 +308,7 @@
           <!-- Left Column: Ingredients Checklist -->
           <section class="recipe-section ingredients-card" aria-labelledby="ingredientsHeading">
             <div class="section-title-wrap">
-              <h2 class="recipe-section-title" id="ingredientsHeading">Ingredients</h2>
-              <span class="ingredients-hint">Check off as you prep</span>
+              <h2 class="recipe-section-title" id="ingredientsHeading" data-i18n="recipe_ingredients_heading">Ingredients</h2>
             </div>
 
             <ul class="ingredients-list" id="recipeIngredientsList" role="list">
@@ -277,7 +319,7 @@
           <!-- Right Column: Cooking Instructions -->
           <section class="recipe-section instructions-card" aria-labelledby="instructionsHeading">
             <div class="section-title-wrap">
-              <h2 class="recipe-section-title" id="instructionsHeading">Cooking Instructions</h2>
+              <h2 class="recipe-section-title" id="instructionsHeading" data-i18n="recipe_instructions_heading">Cooking Instructions</h2>
             </div>
 
             <div class="instructions-steps" id="recipeInstructions">
@@ -290,8 +332,8 @@
         <!-- Video Player Section (shown if YouTube URL exists) -->
         <section class="recipe-video-section" id="recipeVideoSection" style="display: none;" aria-labelledby="videoHeading">
           <div class="section-header">
-            <h2 class="section-heading" id="videoHeading">Video Tutorial</h2>
-            <p class="section-description">Follow along with the chef's step-by-step video guide.</p>
+            <h2 class="section-heading" id="videoHeading" data-i18n="recipe_video_heading">Video Tutorial</h2>
+            <p class="section-description" data-i18n="recipe_video_desc">Follow along with the chef's step-by-step video guide.</p>
           </div>
           <div class="video-responsive-wrapper">
             <iframe
@@ -312,8 +354,8 @@
       <section class="similar-recipes-section section" id="similarRecipesSection" style="display: none;" aria-labelledby="similarHeading">
         <div class="section-header">
           <div class="section-header-text">
-            <h2 class="section-heading" id="similarHeading">Similar recipes you might enjoy</h2>
-            <p class="section-description">
+            <h2 class="section-heading" id="similarHeading" data-i18n="recipe_similar_heading">Similar recipes you might enjoy</h2>
+            <p class="section-description" id="similarRecipesSubtitle">
               More delicious dishes from the <span id="similarCategoryName" class="highlight-category"></span> category.
             </p>
           </div>
@@ -350,35 +392,35 @@
             </span>
             <span class="site-logo-text">Cookly</span>
           </a>
-          <p class="footer-tagline">Simple recipes. Better meals.</p>
+          <p class="footer-tagline" data-i18n="brand_subtagline">Simple recipes. Better meals.</p>
         </div>
 
         <!-- Footer Navigation Columns -->
         <nav class="footer-nav" aria-label="Footer navigation">
 
           <div class="footer-nav-column">
-            <h3 class="footer-nav-heading">Explore</h3>
+            <h3 class="footer-nav-heading" data-i18n="footer_col_explore">Explore</h3>
             <ul class="footer-nav-list" role="list">
-              <li><a href="index.html#popularRecipes" class="footer-nav-link">Recipes</a></li>
-              <li><a href="index.html#categories" class="footer-nav-link">Categories</a></li>
-              <li><a href="index.html#randomCta" class="footer-nav-link">Random Recipe</a></li>
+              <li><a href="index.html#popularRecipes" class="footer-nav-link" data-i18n="footer_link_recipes">Recipes</a></li>
+              <li><a href="index.html#categories" class="footer-nav-link" data-i18n="footer_link_categories">Categories</a></li>
+              <li><a href="index.html#randomCta" class="footer-nav-link" data-i18n="footer_link_random">Random Recipe</a></li>
             </ul>
           </div>
 
           <div class="footer-nav-column">
-            <h3 class="footer-nav-heading">Account</h3>
+            <h3 class="footer-nav-heading" data-i18n="footer_col_account">Account</h3>
             <ul class="footer-nav-list" role="list">
-              <li><a href="favorites.html" class="footer-nav-link">Favorites</a></li>
-              <li><a href="index.html#recentSearchesSection" class="footer-nav-link">Recently Viewed</a></li>
+              <li><a href="favorites.html" class="footer-nav-link" data-i18n="footer_link_favorites">Favorites</a></li>
+              <li><a href="index.html#recentSearchesSection" class="footer-nav-link" data-i18n="footer_link_recent">Recently Viewed</a></li>
             </ul>
           </div>
 
           <div class="footer-nav-column">
-            <h3 class="footer-nav-heading">Information</h3>
+            <h3 class="footer-nav-heading" data-i18n="footer_col_info">Information</h3>
             <ul class="footer-nav-list" role="list">
-              <li><a href="index.html#hero" class="footer-nav-link">About</a></li>
-              <li><a href="index.html#newsletter" class="footer-nav-link">Privacy</a></li>
-              <li><a href="index.html#newsletter" class="footer-nav-link">Contact</a></li>
+              <li><a href="index.html#hero" class="footer-nav-link" data-i18n="footer_link_about">About</a></li>
+              <li><a href="index.html#newsletter" class="footer-nav-link" data-i18n="footer_link_privacy">Privacy</a></li>
+              <li><a href="index.html#newsletter" class="footer-nav-link" data-i18n="footer_link_contact">Contact</a></li>
             </ul>
           </div>
 
@@ -388,7 +430,7 @@
       <!-- Footer Bottom Bar -->
       <div class="footer-bottom">
         <p class="footer-copyright">
-          &copy; <span id="currentYear">2026</span> Cookly. All rights reserved.
+          &copy; <span id="currentYear">2026</span> Cookly. <span data-i18n="footer_copyright">All rights reserved.</span>
         </p>
         <p class="footer-credit">
           Recipe data powered by <a href="https://www.themealdb.com" class="footer-credit-link" target="_blank" rel="noopener noreferrer">TheMealDB</a>.

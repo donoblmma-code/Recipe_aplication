@@ -27,6 +27,13 @@ import {
 
 import { debounce, sanitizeText } from "./utils.js";
 
+import {
+  initI18n,
+  onLanguageChange,
+  t,
+  translateCategory
+} from "./i18n.js";
+
 /* --------------------------------------------------------------------------
    App State
    -------------------------------------------------------------------------- */
@@ -134,8 +141,8 @@ function renderFavoritesPreview() {
   if (favs.length === 0) {
     elements.favoritesPreview.innerHTML = `
       <div class="empty-favorites-box" style="grid-column: 1 / -1;">
-        <p class="empty-favorites-text">You haven't saved any recipes yet.</p>
-        <p class="empty-favorites-sub">Click the heart icon on any recipe to save it here for later.</p>
+        <p class="empty-favorites-text">${t("empty_favorites_title")}</p>
+        <p class="empty-favorites-sub">${t("empty_favorites_desc")}</p>
       </div>
     `;
     return;
@@ -214,7 +221,7 @@ async function executeSearch(query, { saveToHistory = true } = {}) {
   if (elements.emptyState) elements.emptyState.hidden = true;
   if (elements.errorState) elements.errorState.hidden = true;
   if (elements.searchQueryDisplay) elements.searchQueryDisplay.textContent = `"${clean}"`;
-  if (elements.searchResultsCount) elements.searchResultsCount.textContent = "Searching recipes...";
+  if (elements.searchResultsCount) elements.searchResultsCount.textContent = t("search_loading");
 
   // Render skeletons while loading
   renderLoadingSkeletons(elements.searchResultsGrid, 8);
@@ -229,13 +236,15 @@ async function executeSearch(query, { saveToHistory = true } = {}) {
 
     if (state.searchResults.length === 0) {
       elements.searchResultsGrid.innerHTML = "";
-      if (elements.searchResultsCount) elements.searchResultsCount.textContent = "0 recipes found";
+      if (elements.searchResultsCount) elements.searchResultsCount.textContent = t("search_results_count_none");
       if (elements.emptyState) elements.emptyState.hidden = false;
-      announceLive(`No recipes found for ${clean}`);
+      announceLive(t("empty_search_title"));
       return;
     }
 
-    const countText = `${state.searchResults.length} recipe${state.searchResults.length === 1 ? "" : "s"} found`;
+    const countText = state.searchResults.length === 1
+      ? t("search_results_count_single")
+      : t("search_results_count", { count: state.searchResults.length });
     if (elements.searchResultsCount) elements.searchResultsCount.textContent = countText;
     announceLive(countText);
 
@@ -244,9 +253,9 @@ async function executeSearch(query, { saveToHistory = true } = {}) {
     if (requestId !== state.searchRequestId) return;
     console.error("Search failed:", err);
     elements.searchResultsGrid.innerHTML = "";
-    if (elements.searchResultsCount) elements.searchResultsCount.textContent = "Error occurred";
+    if (elements.searchResultsCount) elements.searchResultsCount.textContent = t("search_error_title");
     if (elements.errorState) elements.errorState.hidden = false;
-    announceLive("Could not load recipes due to network error.");
+    announceLive(t("search_error_network"));
   }
 }
 
@@ -261,11 +270,13 @@ async function executeCategoryFilter(category) {
   state.currentQuery = category;
   state.lastSearchAction = () => executeCategoryFilter(category);
 
+  const translatedCategory = translateCategory(category);
+
   if (elements.searchResultsSection) elements.searchResultsSection.hidden = false;
   if (elements.emptyState) elements.emptyState.hidden = true;
   if (elements.errorState) elements.errorState.hidden = true;
-  if (elements.searchQueryDisplay) elements.searchQueryDisplay.textContent = `Category: ${category}`;
-  if (elements.searchResultsCount) elements.searchResultsCount.textContent = "Loading category recipes...";
+  if (elements.searchQueryDisplay) elements.searchQueryDisplay.textContent = t("search_results_category", { category: translatedCategory });
+  if (elements.searchResultsCount) elements.searchResultsCount.textContent = t("search_loading_category");
 
   renderLoadingSkeletons(elements.searchResultsGrid, 8);
   elements.searchResultsSection?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -277,12 +288,14 @@ async function executeCategoryFilter(category) {
 
     if (state.searchResults.length === 0) {
       elements.searchResultsGrid.innerHTML = "";
-      if (elements.searchResultsCount) elements.searchResultsCount.textContent = "0 recipes found";
+      if (elements.searchResultsCount) elements.searchResultsCount.textContent = t("search_results_count_none");
       if (elements.emptyState) elements.emptyState.hidden = false;
       return;
     }
 
-    const countText = `${state.searchResults.length} ${category} recipes found`;
+    const countText = state.searchResults.length === 1
+      ? t("search_results_count_single")
+      : t("search_results_count", { count: state.searchResults.length });
     if (elements.searchResultsCount) elements.searchResultsCount.textContent = countText;
 
     renderRecipes(state.searchResults, elements.searchResultsGrid, getFavoriteIdsSet(), category);
@@ -390,18 +403,19 @@ document.addEventListener("click", (e) => {
   if (!id) return;
 
   const card = favBtn.closest(".recipe-card");
-  const title = card?.querySelector(".recipe-card-title")?.textContent.trim() || "Recipe";
+  const title = card?.querySelector(".recipe-card-title")?.textContent.trim() || t("recipe_default_category");
   const img = card?.querySelector(".recipe-card-img, .recipe-card-image")?.src || "";
-  const cat = card?.querySelector(".badge-accent, .recipe-card-category")?.textContent.trim() || "Recipe";
+  const cat = card?.querySelector(".badge-accent, .recipe-card-category")?.textContent.trim() || t("recipe_default_category");
 
   const isFav = isFavorite(id);
   if (isFav) {
     removeFavorite(id);
     favBtn.classList.remove("is-favorite");
     favBtn.setAttribute("aria-pressed", "false");
-    showToast(`Removed "${title}" from favorites`, "info");
+    showToast(t("toast_removed_fav", { title }), "info");
   } else {
-    saveFavorite({
+    const fullMeal = [...state.searchResults, ...state.popularRecipes].find(meal => meal.idMeal === id);
+    saveFavorite(fullMeal || {
       idMeal: id,
       strMeal: title,
       strMealThumb: img,
@@ -409,7 +423,7 @@ document.addEventListener("click", (e) => {
     });
     favBtn.classList.add("is-favorite");
     favBtn.setAttribute("aria-pressed", "true");
-    showToast(`Saved "${title}" to favorites!`, "success");
+    showToast(t("toast_saved_fav", { title }), "success");
   }
 
   syncFavorites();
@@ -425,7 +439,7 @@ async function triggerRandomRecipe(btn) {
     }
   } catch (err) {
     console.error("Surprise Me error:", err);
-    showToast("Could not pick a random recipe right now", "info");
+    showToast(t("toast_random_error"), "info");
     if (btn) btn.disabled = false;
   }
 }
@@ -455,18 +469,52 @@ if (elements.newsletterForm) {
     e.preventDefault();
     const email = elements.newsletterEmail?.value.trim();
     if (email && email.includes("@")) {
-      showToast("Thank you for subscribing to Cookly!", "success");
+      showToast(t("toast_newsletter_success"), "success");
       elements.newsletterForm.reset();
     } else {
-      showToast("Please enter a valid email address.", "info");
+      showToast(t("toast_newsletter_invalid"), "info");
     }
   });
 }
+
+// Keep the favorites preview updated when changed in another tab
+window.addEventListener("storage", (e) => {
+  if (e.key === "recipe_app_favorites") {
+    syncFavorites();
+  }
+});
+
+// Re-render dynamic components on language change
+onLanguageChange(() => {
+  syncFavorites();
+
+  if (state.popularRecipes.length > 0) {
+    renderRecipes(state.popularRecipes, elements.popularRecipesGrid, getFavoriteIdsSet(), "Popular");
+  }
+
+  if (state.searchResults.length > 0) {
+    const countText = state.searchResults.length === 1
+      ? t("search_results_count_single")
+      : t("search_results_count", { count: state.searchResults.length });
+    if (elements.searchResultsCount) elements.searchResultsCount.textContent = countText;
+
+    if (state.currentQuery) {
+      const isCategory = elements.searchQueryDisplay?.textContent?.includes(":");
+      if (isCategory) {
+        elements.searchQueryDisplay.textContent = t("search_results_category", { category: translateCategory(state.currentQuery) });
+      }
+    }
+
+    renderRecipes(state.searchResults, elements.searchResultsGrid, getFavoriteIdsSet(), state.currentQuery);
+  }
+});
 
 /* --------------------------------------------------------------------------
    Initialization
    -------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
+  initI18n();
+
   if (elements.currentYear) {
     elements.currentYear.textContent = String(new Date().getFullYear());
   }

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Cookly — Search thousands of recipes, explore new cuisines, and find something worth cooking today.">
   <meta name="theme-color" content="#ffffff">
-  <title>Cookly — Good food starts with a good idea.</title>
+  <title data-i18n-page-title="page_title_home">Cookly — Good food starts with a good idea.</title>
 
   <!-- Preconnect to API and Image CDN -->
   <link rel="preconnect" href="https://www.themealdb.com">
@@ -43,31 +43,46 @@
       <nav class="primary-nav" id="primaryNav" aria-label="Primary navigation">
         <ul class="nav-list" role="list">
           <li class="nav-item">
-            <a href="index.html" class="nav-link nav-link--active" aria-current="page">Home</a>
+            <a href="index.html" class="nav-link nav-link--active" aria-current="page" data-i18n="nav_home">Home</a>
           </li>
           <li class="nav-item">
-            <a href="#categories" class="nav-link">Explore</a>
+            <a href="#categories" class="nav-link" data-i18n="nav_explore">Explore</a>
           </li>
           <li class="nav-item">
             <a href="favorites.html" class="nav-link" id="favoritesNavLink">
-              Favorites
-              <span class="nav-badge" id="headerFavoritesCount" aria-label="favorites count" style="display: none;">0</span>
+              <span data-i18n="nav_favorites">Favorites</span>
+              <span class="nav-badge" id="headerFavoritesCount" aria-label="favorites count" data-i18n-attr="aria-label:favorites_count_badge" style="display: none;">0</span>
             </a>
           </li>
         </ul>
+
+        <!-- Language Selector -->
+        <div class="lang-selector" aria-label="Language selector">
+          <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <select class="lang-select" aria-label="Language" data-i18n-attr="aria-label:nav_lang_label">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ru">Русский</option>
+          </select>
+        </div>
 
         <button
           type="button"
           class="btn btn-primary btn-surprise"
           id="randomRecipeButton"
           aria-label="Get a random recipe suggestion"
+          data-i18n-attr="aria-label:nav_surprise_me"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="23 4 23 10 17 10"></polyline>
             <polyline points="1 20 1 14 7 14"></polyline>
             <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
           </svg>
-          <span>Surprise Me</span>
+          <span data-i18n="nav_surprise_me">Surprise Me</span>
         </button>
       </nav>
 
@@ -77,6 +92,7 @@
         class="mobile-menu-button"
         id="mobileMenuButton"
         aria-label="Open navigation menu"
+        data-i18n-attr="aria-label:nav_open_menu"
         aria-expanded="false"
         aria-controls="mobileNavigation"
       >
@@ -94,22 +110,35 @@
       hidden
     >
       <ul class="mobile-nav-list" role="list">
-        <li><a href="index.html" class="mobile-nav-link" aria-current="page">Home</a></li>
-        <li><a href="#categories" class="mobile-nav-link">Explore</a></li>
+        <li><a href="index.html" class="mobile-nav-link" aria-current="page" data-i18n="nav_home">Home</a></li>
+        <li><a href="#categories" class="mobile-nav-link" data-i18n="nav_explore">Explore</a></li>
         <li>
           <a href="favorites.html" class="mobile-nav-link">
-            Favorites
+            <span data-i18n="nav_favorites">Favorites</span>
             <span class="nav-badge mobile-fav-badge" style="display: none;">0</span>
           </a>
         </li>
       </ul>
+
+      <div class="mobile-lang-row">
+        <span class="mobile-lang-label" data-i18n="nav_lang_label">Language</span>
+        <div class="lang-selector">
+          <select class="lang-select" aria-label="Language" data-i18n-attr="aria-label:nav_lang_label">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ru">Русский</option>
+          </select>
+        </div>
+      </div>
+
       <button
         type="button"
         class="btn btn-primary btn-surprise btn-full"
         id="randomRecipeButtonMobile"
         aria-label="Get a random recipe suggestion"
+        data-i18n-attr="aria-label:nav_surprise_me"
       >
-        Surprise Me
+        <span data-i18n="nav_surprise_me">Surprise Me</span>
       </button>
     </nav>
   </header>
@@ -127,14 +156,15 @@
       <div class="container hero-inner">
 
         <div class="hero-content">
-          <p class="hero-eyebrow">Discover your next favorite meal</p>
+          <p class="hero-eyebrow" data-i18n="hero_eyebrow">Discover your next favorite meal</p>
 
           <h1 class="hero-heading" id="heroHeading">
-            Good food starts<br>with a good idea.
+            <span data-i18n="hero_heading_1">Good food starts</span><br>
+            <span data-i18n="hero_heading_2">with a good idea.</span>
           </h1>
 
-          <p class="hero-description">
-            Search thousands of recipes, explore new cuisines, and find something worth cooking today.
+          <p class="hero-description" data-i18n="hero_subhead">
+            Search recipes by dish or ingredient, explore world cuisines, and save the meals you love.
           </p>
 
           <!-- Search Form -->
@@ -158,7 +188,8 @@
                 class="search-input"
                 id="searchInput"
                 name="query"
-                placeholder="Search chicken, pasta, soup..."
+                placeholder="Try 'pasta', 'chicken', 'tacos'..."
+                data-i18n-attr="placeholder:search_placeholder"
                 autocomplete="off"
                 autocorrect="off"
                 spellcheck="false"
@@ -168,6 +199,7 @@
                 class="btn btn-primary search-button"
                 id="searchButton"
                 aria-label="Submit recipe search"
+                data-i18n="search_button"
               >
                 Search
               </button>
@@ -176,7 +208,7 @@
 
           <!-- Popular Searches -->
           <div class="popular-searches" aria-label="Popular searches">
-            <span class="popular-searches-label">Popular:</span>
+            <span class="popular-searches-label" data-i18n="search_popular_label">Popular searches:</span>
             <div class="popular-searches-list" role="list">
               <button
                 type="button"
@@ -184,6 +216,7 @@
                 data-search="Chicken"
                 aria-label="Search for Chicken recipes"
                 role="listitem"
+                data-i18n="category_chicken"
               >
                 Chicken
               </button>
@@ -193,17 +226,9 @@
                 data-search="Pasta"
                 aria-label="Search for Pasta recipes"
                 role="listitem"
+                data-i18n="category_pasta"
               >
                 Pasta
-              </button>
-              <button
-                type="button"
-                class="tag-button"
-                data-search="Salmon"
-                aria-label="Search for Salmon recipes"
-                role="listitem"
-              >
-                Salmon
               </button>
               <button
                 type="button"
@@ -211,6 +236,7 @@
                 data-search="Beef"
                 aria-label="Search for Beef recipes"
                 role="listitem"
+                data-i18n="category_beef"
               >
                 Beef
               </button>
@@ -220,8 +246,19 @@
                 data-search="Dessert"
                 aria-label="Search for Dessert recipes"
                 role="listitem"
+                data-i18n="category_dessert"
               >
                 Dessert
+              </button>
+              <button
+                type="button"
+                class="tag-button"
+                data-search="Vegetarian"
+                aria-label="Search for Vegetarian recipes"
+                role="listitem"
+                data-i18n="category_vegetarian"
+              >
+                Vegetarian
               </button>
             </div>
           </div>
@@ -240,8 +277,8 @@
             >
           </div>
           <div class="hero-badge">
-            <span class="hero-badge-number">12,000+</span>
-            <span class="hero-badge-label">Recipes to discover</span>
+            <span class="hero-badge-number">300+</span>
+            <span class="hero-badge-label" data-i18n="hero_eyebrow">Discover your next favorite meal</span>
           </div>
         </div>
 
@@ -257,8 +294,8 @@
 
         <div class="section-header">
           <div class="section-header-text">
-            <h2 class="section-heading" id="categoriesHeading">Browse categories</h2>
-            <p class="section-description">Find something based on what you're in the mood for.</p>
+            <h2 class="section-heading" id="categoriesHeading" data-i18n="categories_heading">Browse categories</h2>
+            <p class="section-description" data-i18n="categories_subtitle">Pick a cuisine style to start exploring hundreds of curated meals.</p>
           </div>
         </div>
 
@@ -281,7 +318,7 @@
                 height="200"
               >
             </div>
-            <span class="category-card-name">Breakfast</span>
+            <span class="category-card-name" data-i18n="category_breakfast">Breakfast</span>
           </button>
 
           <button
@@ -301,7 +338,7 @@
                 height="200"
               >
             </div>
-            <span class="category-card-name">Chicken</span>
+            <span class="category-card-name" data-i18n="category_chicken">Chicken</span>
           </button>
 
           <button
@@ -321,7 +358,7 @@
                 height="200"
               >
             </div>
-            <span class="category-card-name">Beef</span>
+            <span class="category-card-name" data-i18n="category_beef">Beef</span>
           </button>
 
           <button
@@ -341,7 +378,7 @@
                 height="200"
               >
             </div>
-            <span class="category-card-name">Seafood</span>
+            <span class="category-card-name" data-i18n="category_seafood">Seafood</span>
           </button>
 
           <button
@@ -361,7 +398,7 @@
                 height="200"
               >
             </div>
-            <span class="category-card-name">Pasta</span>
+            <span class="category-card-name" data-i18n="category_pasta">Pasta</span>
           </button>
 
           <button
@@ -381,7 +418,7 @@
                 height="200"
               >
             </div>
-            <span class="category-card-name">Vegetarian</span>
+            <span class="category-card-name" data-i18n="category_vegetarian">Vegetarian</span>
           </button>
 
           <button
@@ -401,7 +438,7 @@
                 height="200"
               >
             </div>
-            <span class="category-card-name">Dessert</span>
+            <span class="category-card-name" data-i18n="category_dessert">Dessert</span>
           </button>
 
           <button
@@ -421,7 +458,7 @@
                 height="200"
               >
             </div>
-            <span class="category-card-name">Side Dish</span>
+            <span class="category-card-name" data-i18n="category_side">Side Dishes</span>
           </button>
 
         </div>
@@ -443,7 +480,7 @@
         <div class="section-header search-results-header">
           <div class="section-header-text">
             <h2 class="section-heading" id="searchResultsHeading">
-              Results for <span id="searchQueryDisplay" class="search-query-text"></span>
+              <span data-i18n="search_results_heading">Results for</span> <span id="searchQueryDisplay" class="search-query-text"></span>
             </h2>
             <p class="section-description">
               <span id="searchResultsCount" aria-live="polite">0 recipes found</span>
@@ -454,6 +491,7 @@
             class="btn btn-secondary"
             id="clearSearchButton"
             aria-label="Clear search and return to homepage"
+            data-i18n="clear_search"
           >
             Clear Search
           </button>
@@ -477,17 +515,18 @@
                 <line x1="8" y1="11" x2="14" y2="11"></line>
               </svg>
             </div>
-            <h3 class="empty-state-heading">No recipes found</h3>
-            <p class="empty-state-description">
-              Try searching for another ingredient or dish.
+            <h3 class="empty-state-heading" data-i18n="empty_search_title">No recipes found</h3>
+            <p class="empty-state-description" data-i18n="empty_search_desc">
+              We couldn't find anything matching your search. Try different keywords, ingredients, or explore categories below.
             </p>
             <button
               type="button"
               class="btn btn-primary"
               id="exploreRecipesButton"
               aria-label="Explore all recipes"
+              data-i18n="empty_search_button"
             >
-              Explore recipes
+              Explore popular recipes
             </button>
           </div>
         </div>
@@ -502,15 +541,16 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
-            <h3 class="error-state-heading">We couldn't load the recipes.</h3>
-            <p class="error-state-description">
-              Check your connection and try again.
+            <h3 class="error-state-heading" data-i18n="search_error_title">We couldn't load the recipes.</h3>
+            <p class="error-state-description" data-i18n="search_error_desc">
+              Please check your internet connection or try again in a few moments.
             </p>
             <button
               type="button"
               class="btn btn-primary"
               id="retryButton"
               aria-label="Retry loading recipes"
+              data-i18n="retry"
             >
               Try Again
             </button>
@@ -529,185 +569,17 @@
 
         <div class="section-header">
           <div class="section-header-text">
-            <h2 class="section-heading" id="popularHeading">Popular right now</h2>
-            <p class="section-description">Recipes people can't stop cooking.</p>
+            <h2 class="section-heading" id="popularHeading" data-i18n="popular_heading">Popular right now</h2>
+            <p class="section-description" data-i18n="popular_subtitle">A rotating selection of crowd favorites and comfort classics.</p>
           </div>
-          <a href="#categories" class="section-link" id="viewAllRecipesLink" aria-label="View all popular recipes">
+          <a href="#categories" class="section-link" id="viewAllRecipesLink" aria-label="View all popular recipes" data-i18n="view_all_recipes">
             View all
           </a>
         </div>
 
         <!-- Recipe Cards Grid: fallback cards are replaced by app.js once the API responds -->
         <div class="recipe-grid" id="popularRecipesGrid" aria-label="Popular recipes">
-
-          <article class="recipe-card" data-recipe-id="52772">
-            <div class="recipe-card-image-wrapper recipe-card-media">
-              <img
-                src="https://www.themealdb.com/images/media/meals/sstssx1487349585.jpg"
-                alt="Teriyaki Chicken Casserole"
-                class="recipe-card-image recipe-card-img"
-                loading="lazy"
-                width="400"
-                height="300"
-              >
-              <button
-                type="button"
-                class="favorite-button recipe-card-fav-btn"
-                aria-label="Add Teriyaki Chicken Casserole to favorites"
-                data-recipe-id="52772"
-                aria-pressed="false"
-              >
-                <span class="favorite-icon" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                  </svg>
-                </span>
-              </button>
-            </div>
-            <div class="recipe-card-content recipe-card-body">
-              <div class="recipe-card-meta">
-                <span class="recipe-card-category badge badge-accent">Chicken</span>
-                <span class="recipe-card-area badge badge-subtle">Japanese</span>
-              </div>
-              <h3 class="recipe-card-title">Teriyaki Chicken Casserole</h3>
-              <div class="recipe-card-footer">
-                <a
-                  href="recipe.html?id=52772"
-                  class="btn btn-secondary recipe-card-link"
-                  aria-label="View full recipe for Teriyaki Chicken Casserole"
-                >
-                  View Recipe
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <article class="recipe-card" data-recipe-id="52869">
-            <div class="recipe-card-image-wrapper recipe-card-media">
-              <img
-                src="https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
-                alt="Kumpir"
-                class="recipe-card-image recipe-card-img"
-                loading="lazy"
-                width="400"
-                height="300"
-              >
-              <button
-                type="button"
-                class="favorite-button recipe-card-fav-btn"
-                aria-label="Add Kumpir to favorites"
-                data-recipe-id="52869"
-                aria-pressed="false"
-              >
-                <span class="favorite-icon" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                  </svg>
-                </span>
-              </button>
-            </div>
-            <div class="recipe-card-content recipe-card-body">
-              <div class="recipe-card-meta">
-                <span class="recipe-card-category badge badge-accent">Side</span>
-                <span class="recipe-card-area badge badge-subtle">Turkish</span>
-              </div>
-              <h3 class="recipe-card-title">Kumpir</h3>
-              <div class="recipe-card-footer">
-                <a
-                  href="recipe.html?id=52869"
-                  class="btn btn-secondary recipe-card-link"
-                  aria-label="View full recipe for Kumpir"
-                >
-                  View Recipe
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <article class="recipe-card" data-recipe-id="53049">
-            <div class="recipe-card-image-wrapper recipe-card-media">
-              <img
-                src="https://www.themealdb.com/images/media/meals/g373701542818194.jpg"
-                alt="Apam Balik"
-                class="recipe-card-image recipe-card-img"
-                loading="lazy"
-                width="400"
-                height="300"
-              >
-              <button
-                type="button"
-                class="favorite-button recipe-card-fav-btn"
-                aria-label="Add Apam Balik to favorites"
-                data-recipe-id="53049"
-                aria-pressed="false"
-              >
-                <span class="favorite-icon" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                  </svg>
-                </span>
-              </button>
-            </div>
-            <div class="recipe-card-content recipe-card-body">
-              <div class="recipe-card-meta">
-                <span class="recipe-card-category badge badge-accent">Dessert</span>
-                <span class="recipe-card-area badge badge-subtle">Malaysian</span>
-              </div>
-              <h3 class="recipe-card-title">Apam Balik</h3>
-              <div class="recipe-card-footer">
-                <a
-                  href="recipe.html?id=53049"
-                  class="btn btn-secondary recipe-card-link"
-                  aria-label="View full recipe for Apam Balik"
-                >
-                  View Recipe
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <article class="recipe-card" data-recipe-id="52959">
-            <div class="recipe-card-image-wrapper recipe-card-media">
-              <img
-                src="https://www.themealdb.com/images/media/meals/1549542355.jpg"
-                alt="Budino Di Ricotta"
-                class="recipe-card-image recipe-card-img"
-                loading="lazy"
-                width="400"
-                height="300"
-              >
-              <button
-                type="button"
-                class="favorite-button recipe-card-fav-btn"
-                aria-label="Add Budino Di Ricotta to favorites"
-                data-recipe-id="52959"
-                aria-pressed="false"
-              >
-                <span class="favorite-icon" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                  </svg>
-                </span>
-              </button>
-            </div>
-            <div class="recipe-card-content recipe-card-body">
-              <div class="recipe-card-meta">
-                <span class="recipe-card-category badge badge-accent">Dessert</span>
-                <span class="recipe-card-area badge badge-subtle">Italian</span>
-              </div>
-              <h3 class="recipe-card-title">Budino Di Ricotta</h3>
-              <div class="recipe-card-footer">
-                <a
-                  href="recipe.html?id=52959"
-                  class="btn btn-secondary recipe-card-link"
-                  aria-label="View full recipe for Budino Di Ricotta"
-                >
-                  View Recipe
-                </a>
-              </div>
-            </div>
-          </article>
-
+          <!-- Dynamically populated by app.js -->
         </div>
       </div>
     </section>
@@ -720,16 +592,17 @@
       <div class="container">
         <div class="random-cta-inner">
           <div class="random-cta-content">
-            <h2 class="random-cta-heading" id="randomCtaHeading">Not sure what to cook?</h2>
-            <p class="random-cta-description">Let Cookly choose something for you.</p>
+            <h2 class="random-cta-heading" id="randomCtaHeading" data-i18n="random_cta_heading">Not sure what to cook?</h2>
+            <p class="random-cta-description" data-i18n="random_cta_text">Let Cookly choose for you. Get an instant recipe suggestion from over 300 meals around the world.</p>
           </div>
           <button
             type="button"
             class="btn btn-primary btn-large"
             id="randomRecipeButtonSecondary"
             aria-label="Pick a random recipe for me"
+            data-i18n="random_cta_button"
           >
-            Pick a random recipe
+            Surprise Me
           </button>
         </div>
       </div>
@@ -744,10 +617,10 @@
 
         <div class="section-header">
           <div class="section-header-text">
-            <h2 class="section-heading" id="favoritesHeading">Your favorites</h2>
-            <p class="section-description">Quick access to recipes you've saved.</p>
+            <h2 class="section-heading" id="favoritesHeading" data-i18n="favorites_preview_heading">Your favorites</h2>
+            <p class="section-description" data-i18n="favorites_preview_subtitle">Quick access to the meals you've bookmarked.</p>
           </div>
-          <a href="favorites.html" class="section-link" aria-label="View all saved favorite recipes">
+          <a href="favorites.html" class="section-link" aria-label="View all saved favorite recipes" data-i18n="view_all_favorites">
             View all
           </a>
         </div>
@@ -775,7 +648,7 @@
     >
       <div class="container">
         <div class="section-header">
-          <h2 class="section-heading" id="recentSearchesHeading">Recently searched</h2>
+          <h2 class="section-heading" id="recentSearchesHeading" data-i18n="recent_searches_heading">Recently searched</h2>
         </div>
         <div
           class="recent-searches-list"
@@ -795,9 +668,9 @@
         <div class="newsletter-inner">
 
           <div class="newsletter-content">
-            <h2 class="newsletter-heading" id="newsletterHeading">Save room for something new.</h2>
-            <p class="newsletter-description">
-              Get recipe inspiration and new ideas delivered to your inbox.
+            <h2 class="newsletter-heading" id="newsletterHeading" data-i18n="newsletter_heading">Save room for something new.</h2>
+            <p class="newsletter-description" data-i18n="newsletter_desc">
+              Get weekly recipe inspiration, seasonal cooking guides, and dinner ideas delivered to your inbox.
             </p>
           </div>
 
@@ -814,7 +687,8 @@
                 class="newsletter-input"
                 id="newsletterEmail"
                 name="email"
-                placeholder="your@email.com"
+                placeholder="Your email address"
+                data-i18n-attr="placeholder:newsletter_placeholder"
                 autocomplete="email"
                 aria-required="true"
                 required
@@ -823,12 +697,13 @@
                 type="submit"
                 class="btn btn-primary newsletter-submit"
                 aria-label="Subscribe to the Cookly newsletter"
+                data-i18n="newsletter_button"
               >
                 Subscribe
               </button>
             </div>
-            <p class="newsletter-disclaimer">
-              No spam, ever. Unsubscribe at any time.
+            <p class="newsletter-disclaimer" data-i18n="newsletter_note">
+              No spam, ever. Unsubscribe anytime.
             </p>
           </form>
 
@@ -861,35 +736,35 @@
             </span>
             <span class="site-logo-text">Cookly</span>
           </a>
-          <p class="footer-tagline">Simple recipes. Better meals.</p>
+          <p class="footer-tagline" data-i18n="brand_subtagline">Simple recipes. Better meals.</p>
         </div>
 
         <!-- Footer Navigation Columns -->
         <nav class="footer-nav" aria-label="Footer navigation">
 
           <div class="footer-nav-column">
-            <h3 class="footer-nav-heading">Explore</h3>
+            <h3 class="footer-nav-heading" data-i18n="footer_col_explore">Explore</h3>
             <ul class="footer-nav-list" role="list">
-              <li><a href="#popularRecipes" class="footer-nav-link">Recipes</a></li>
-              <li><a href="#categories" class="footer-nav-link">Categories</a></li>
-              <li><a href="#randomCta" class="footer-nav-link">Random Recipe</a></li>
+              <li><a href="#popularRecipes" class="footer-nav-link" data-i18n="footer_link_recipes">Recipes</a></li>
+              <li><a href="#categories" class="footer-nav-link" data-i18n="footer_link_categories">Categories</a></li>
+              <li><a href="#randomCta" class="footer-nav-link" data-i18n="footer_link_random">Random Recipe</a></li>
             </ul>
           </div>
 
           <div class="footer-nav-column">
-            <h3 class="footer-nav-heading">Account</h3>
+            <h3 class="footer-nav-heading" data-i18n="footer_col_account">Account</h3>
             <ul class="footer-nav-list" role="list">
-              <li><a href="favorites.html" class="footer-nav-link">Favorites</a></li>
-              <li><a href="#recentSearchesSection" class="footer-nav-link">Recently Viewed</a></li>
+              <li><a href="favorites.html" class="footer-nav-link" data-i18n="footer_link_favorites">Favorites</a></li>
+              <li><a href="#recentSearchesSection" class="footer-nav-link" data-i18n="footer_link_recent">Recently Viewed</a></li>
             </ul>
           </div>
 
           <div class="footer-nav-column">
-            <h3 class="footer-nav-heading">Information</h3>
+            <h3 class="footer-nav-heading" data-i18n="footer_col_info">Information</h3>
             <ul class="footer-nav-list" role="list">
-              <li><a href="#hero" class="footer-nav-link">About</a></li>
-              <li><a href="#newsletter" class="footer-nav-link">Privacy</a></li>
-              <li><a href="#newsletter" class="footer-nav-link">Contact</a></li>
+              <li><a href="#hero" class="footer-nav-link" data-i18n="footer_link_about">About</a></li>
+              <li><a href="#newsletter" class="footer-nav-link" data-i18n="footer_link_privacy">Privacy</a></li>
+              <li><a href="#newsletter" class="footer-nav-link" data-i18n="footer_link_contact">Contact</a></li>
             </ul>
           </div>
 
@@ -899,7 +774,7 @@
       <!-- Footer Bottom Bar -->
       <div class="footer-bottom">
         <p class="footer-copyright">
-          &copy; <span id="currentYear">2026</span> Cookly. All rights reserved.
+          &copy; <span id="currentYear">2026</span> Cookly. <span data-i18n="footer_copyright">All rights reserved.</span>
         </p>
         <p class="footer-credit">
           Recipe data powered by <a href="https://www.themealdb.com" class="footer-credit-link" target="_blank" rel="noopener noreferrer">TheMealDB</a>.
